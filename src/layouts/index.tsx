@@ -17,23 +17,20 @@ import Header from './header';
 import MessageHandle from './message-handle';
 // import { useWebSocketMessage } from '@/hooks/use-websocket';
 
-import './index.css'
+import './index.css';
 // import { MenuType } from '@/pages/menu/interface';
 import TabsLayout from './tabs-layout';
 import Content from './content';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 const BasicLayout: React.FC = () => {
-
   // const [loading, setLoading] = useState(true);
 
-  const {lang, token } = useGlobalStore();
+  const { lang, token } = useGlobalStore();
   // const { setCurrentUser, currentUser } = useUserStore();
   const navigate = useNavigate();
   // const location = useLocation();
   // const { setLatestMessage } = useMessageStore();
-
-
 
   // 当获取完用户信息后，手动连接
   // const { latestMessage, connect } = useWebSocketMessage(
@@ -85,7 +82,6 @@ const BasicLayout: React.FC = () => {
   //     }
   //   }
   // }, [latestMessage]);
-
 
   useEffect(() => {
     if (!token) {
@@ -180,7 +176,7 @@ const BasicLayout: React.FC = () => {
 
     return () => {
       window.removeEventListener<'storage'>('storage', storageChange);
-    }
+    };
   }, []);
 
   // if (loading || !currentUser) {
@@ -191,7 +187,7 @@ const BasicLayout: React.FC = () => {
 
   return (
     <div>
-      <div key={lang} className='bg-primary overflow-hidden'>
+      <div key={lang} className="bg-primary overflow-hidden">
         <MessageHandle />
         <Header />
         <Slide />

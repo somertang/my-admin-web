@@ -10,14 +10,9 @@ import { defaultSetting } from '@/config/default-setting';
 import SlideMenu from './menus';
 
 const SlideIndex = () => {
-
   const isPC = true;
 
-  const {
-    collapsed,
-    setCollapsed,
-  } = useGlobalStore();
-
+  const { collapsed, setCollapsed } = useGlobalStore();
 
   useUpdateEffect(() => {
     if (!isPC) {
@@ -27,11 +22,8 @@ const SlideIndex = () => {
     }
   }, [isPC]);
 
-
   function renderMenu() {
-    return (
-      <SlideMenu />
-    )
+    return <SlideMenu />;
   }
 
   if (!isPC) {
@@ -44,15 +36,15 @@ const SlideIndex = () => {
         className="bg-primary"
         zIndex={10001}
         closable={false}
-        title={(
+        title={
           <div
-            className='flex items-center gap-[4px] text-[20px] justify-center'
+            className="flex items-center gap-[4px] text-[20px] justify-center"
             style={{ width: defaultSetting.slideWidth }}
           >
             <IconBuguang className="text-blue-500" />
-            <h1 className='text-primary font-bold text-[22px]'>fluxy-admin</h1>
+            <h1 className="text-primary font-bold text-[22px]">fluxy-admin</h1>
           </div>
-        )}
+        }
         headerStyle={{ padding: '24px 0', border: 'none' }}
         bodyStyle={{ padding: '0 16px' }}
         onClose={() => {
@@ -61,7 +53,7 @@ const SlideIndex = () => {
       >
         {renderMenu()}
       </Drawer>
-    )
+    );
   }
 
   return (
@@ -71,7 +63,7 @@ const SlideIndex = () => {
     >
       {renderMenu()}
     </div>
-  )
-}
+  );
+};
 
 export default memo(SlideIndex);

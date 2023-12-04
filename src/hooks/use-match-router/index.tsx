@@ -28,7 +28,6 @@ export function useMatchRoute(): MatchRouteType | undefined {
 
   // 监听pathname变了，说明路由有变化，重新匹配，返回新路由信息
   useEffect(() => {
-
     // 获取当前匹配的路由
     const lastRoute = matches.at(-1);
 
@@ -43,9 +42,7 @@ export function useMatchRoute(): MatchRouteType | undefined {
       routePath: lastRoute?.pathname || '',
       icon: (lastRoute?.handle as any)?.icon,
     });
-
-  }, [pathname])
-
+  }, [pathname]);
 
   return matchRoute;
 }

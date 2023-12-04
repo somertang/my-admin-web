@@ -9,11 +9,9 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import React, { useEffect, useState } from 'react';
 import { Tabs, TabsProps } from 'antd';
-import {
-  restrictToHorizontalAxis,
-} from '@dnd-kit/modifiers';
+import { restrictToHorizontalAxis } from '@dnd-kit/modifiers';
 
-import './index.css'
+import './index.css';
 
 interface DraggableTabPaneProps extends React.HTMLAttributes<HTMLDivElement> {
   'data-node-key': string;
@@ -38,7 +36,10 @@ const DraggableTabNode = (props: DraggableTabPaneProps) => {
   });
 };
 
-const DraggableTab: React.FC<TabsProps & { onItemsChange?: (items: any[]) => void }> = ({ onItemsChange, ...props }) => {
+const DraggableTab: React.FC<TabsProps & { onItemsChange?: (items: any[]) => void }> = ({
+  onItemsChange,
+  ...props
+}) => {
   const [items, setItems] = useState(props.items || []);
 
   const sensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } });
@@ -80,7 +81,7 @@ const DraggableTab: React.FC<TabsProps & { onItemsChange?: (items: any[]) => voi
       )}
       {...props}
       items={items}
-      className='tab-layout'
+      className="tab-layout"
     />
   );
 };

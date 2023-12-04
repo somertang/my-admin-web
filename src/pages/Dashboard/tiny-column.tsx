@@ -2,7 +2,6 @@ import { TinyColumn } from '@antv/g2plot';
 import { useLayoutEffect, useRef } from 'react';
 
 const DemoTinyColumn = () => {
-
   const container = useRef(null);
 
   useLayoutEffect(() => {
@@ -23,13 +22,10 @@ const DemoTinyColumn = () => {
 
     return () => {
       tinyColumn.destroy();
-    }
+    };
   }, []);
 
-
-  return (
-    <div ref={container} className='w-[100%]' />
-  );
+  return <div ref={container} className="w-[100%]" />;
 };
 
 export default DemoTinyColumn;

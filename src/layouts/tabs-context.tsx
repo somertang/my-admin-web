@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
-import { createContext } from 'react'
+import { createContext } from 'react';
 
 interface KeepAliveTabContextType {
   refreshTab: (path?: string) => void;
@@ -9,10 +9,9 @@ interface KeepAliveTabContextType {
 }
 
 const defaultValue = {
-  refreshTab: () => { },
-  closeTab: () => { },
-  closeOtherTab: () => { },
-}
-
+  refreshTab: () => {},
+  closeTab: () => {},
+  closeOtherTab: () => {},
+};
 
 export const KeepAliveTabContext = createContext<KeepAliveTabContextType>(defaultValue);

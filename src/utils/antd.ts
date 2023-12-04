@@ -11,7 +11,7 @@ class AntdUtils {
 
   setMessageInstance(message: MessageInstance) {
     this.message = message;
-    this.message.success
+    this.message.success;
   }
 
   setNotificationInstance(notification: NotificationInstance) {
