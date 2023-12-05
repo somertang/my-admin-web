@@ -4,7 +4,7 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { IconBuguang } from '@/assets/icons/buguang.tsx';
 import { IconYanzhengma } from '@/assets/icons/yanzhengma.tsx';
 import './index.css';
-import { useRequest } from 'ahooks';
+import { useRequest } from '@/hooks/use-request';
 import loginService, { LoginDTO } from '@/services/login.ts';
 import { useGlobalStore } from '@/stores/global';
 import { useNavigate } from 'react-router-dom';
@@ -17,17 +17,17 @@ const Login: React.FC = () => {
   const { message } = App.useApp();
   const { setRefreshToken, setToken } = useGlobalStore();
   const navigate = useNavigate();
-  const { data: captchaData, refreshAsync } = useRequest(loginService.getCaptcha, {
+  const { data: captchaData, runAsync: refreshAsyncCaptcha } = useRequest(loginService.getCaptcha, {
     manual: false,
   });
   const { runAsync: login, loading } = useRequest(loginService.login, { manual: true });
 
   const handleFinish = async (values: LoginDTO) => {
-    if (!captchaData?.data) {
+    if (!captchaData) {
       return;
     }
 
-    values.captchaId = captchaData?.data?.id;
+    values.captchaId = captchaData?.id;
 
     console.log('====================================');
     console.log(values);
@@ -35,7 +35,11 @@ const Login: React.FC = () => {
 
     try {
       // 获取公钥
-      const { data: publicKey } = await loginService.getPublicKey();
+      const [error, publicKey] = await loginService.getPublicKey();
+
+      if (error) {
+        return;
+      }
 
       console.log('====================================');
       console.log(publicKey);
@@ -49,15 +53,19 @@ const Login: React.FC = () => {
       console.log(encrypt);
       console.log('====================================');
 
-      values.password = password;
+      values.password = password || '';
       values.publicKey = publicKey;
 
-      const { data } = await login(values);
+      const [loginError, data] = await login(values);
+      if (loginError) {
+        return;
+      }
       setToken(data?.token);
       setRefreshToken(data?.refreshToken);
 
       navigate('/');
     } catch (e: any) {
+      await refreshAsyncCaptcha();
       message.error(e?.response?.data?.message);
     }
   };
@@ -99,9 +107,9 @@ const Login: React.FC = () => {
                   placeholder="验证码"
                   suffix={
                     <img
-                      onClick={refreshAsync}
-                      className="cursor-pointer"
-                      src={captchaData?.data?.imageBase64}
+                      onClick={refreshAsyncCaptcha}
+                      className="cursor-pointer h-[28px]"
+                      src={captchaData?.imageBase64}
                     />
                   }
                 />

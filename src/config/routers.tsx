@@ -1,24 +1,26 @@
-import { createBrowserRouter, RouteObject, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouteObject, RouterProvider, Navigate } from 'react-router-dom';
 import Login from '../pages/Login';
-import React, { useEffect } from 'react';
-import { App } from 'antd';
-import { antdUtils } from '@/utils/antd.ts';
+import React from 'react';
 import BasicLayout from '@/layouts';
 import RouterErrorElement from '@/exception/router-error-element.tsx';
 import { routerConfig } from '@/config/router-config.tsx';
-import Result404 from '@/exception/404.tsx';
+// import Result404 from '@/exception/404.tsx';
 
 export const router = createBrowserRouter([
   {
     path: '/login',
     Component: Login,
   },
-  {
-    path: '*',
-    Component: Result404,
-  },
+  // {
+  //   path: '*',
+  //   Component: Result404,
+  // },
   {
     path: '/',
+    element: <Navigate to="/dashbord" />,
+  },
+  {
+    path: '*',
     Component: BasicLayout,
     children: routerConfig,
     errorElement: <RouterErrorElement />,
@@ -53,13 +55,13 @@ export const replaceRoutes = (parentPath: string, routes: RouteObject[]) => {
 };
 
 const Router: React.FC = () => {
-  const { notification, message, modal } = App.useApp();
-
-  useEffect(() => {
-    antdUtils.setMessageInstance(message);
-    antdUtils.setNotificationInstance(notification);
-    antdUtils.setModalInstance(modal);
-  }, [notification, message, modal]);
+  // const { notification, message, modal } = App.useApp();
+  //
+  // useEffect(() => {
+  //   antdUtils.setMessageInstance(message);
+  //   antdUtils.setNotificationInstance(notification);
+  //   antdUtils.setModalInstance(modal);
+  // }, [notification, message, modal]);
 
   return (
     <>

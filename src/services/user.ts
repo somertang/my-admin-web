@@ -1,4 +1,4 @@
-import axios from 'axios';
+import request from '@/utils/request.ts';
 
 export interface User {
   id: number;
@@ -11,8 +11,8 @@ export interface User {
   userEnable: number;
 }
 
-export interface PageData {
-  data: User[];
+export interface PageData<T> {
+  data: T[];
   total: number;
 }
 
@@ -36,36 +36,41 @@ export interface Menu {
 
 const userService = {
   // 分页获取用户列表
-  getUserListByPage: (
+  getUserListByPage: async (
     { current, pageSize }: { current: number; pageSize: number },
     formData: any
   ) => {
-    return axios
-      .get<PageData>('/api/user/page', {
-        params: {
-          page: current - 1,
-          size: pageSize,
-          ...formData,
-        },
-      })
-      .then(({ data }) => {
-        return {
-          list: data.data,
-          total: data.total,
-        };
-      });
+    const [error, data] = await request.get<PageData<User>>('/api/user/page', {
+      params: {
+        page: current - 1,
+        size: pageSize,
+        ...formData,
+      },
+    });
+
+    if (error) {
+      return Promise.reject();
+    }
+
+    return {
+      list: data.data,
+      total: data.total,
+    };
   },
   // 添加用户
   addUser: (data: User) => {
-    return axios.post('/api/user/create', data);
+    return request.post('/api/user/create', data);
   },
   // 更新用户
   updateUser: (data: User) => {
-    return axios.put('/api/user/update', data);
+    return request.put('/api/user/update', data);
   },
   // 删除用户
   deleteUser: (data: User) => {
-    return axios.delete(`/api/user/delete/${data.id}`);
+    return request.delete(`/api/user/delete/${data.id}`);
+  },
+  getCurrentUser: () => {
+    return request.get<User>('/api/auth/current/user');
   },
 };
 

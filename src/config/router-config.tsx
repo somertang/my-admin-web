@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { Navigate } from 'react-router-dom';
+// import { Navigate } from 'react-router-dom';
 
 export interface MenuItem {
   path: string;
@@ -14,7 +14,7 @@ export interface MenuItem {
 
 export const routerConfig: MenuItem[] = [
   {
-    path: '/dashbord',
+    path: 'dashbord',
     Component: lazy(() => import('../pages/Dashboard')),
     handle: {
       name: 'Dashbord',
@@ -33,9 +33,5 @@ export const routerConfig: MenuItem[] = [
         },
       },
     ],
-  },
-  {
-    path: '/',
-    element: <Navigate to="/dashbord" />,
   },
 ];
