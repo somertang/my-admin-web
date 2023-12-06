@@ -35,6 +35,9 @@ dependencies:
   antd:
     specifier: ^5.11.2
     version: 5.11.2(react-dom@18.2.0)(react@18.2.0)
+  antd-img-crop:
+    specifier: ^4.18.0
+    version: 4.18.0(antd@5.11.2)(react-dom@18.2.0)(react@18.2.0)
   await-to-js:
     specifier: ^3.0.0
     version: 3.0.0
@@ -1751,6 +1754,21 @@ packages:
       color-convert: 2.0.1
     dev: true
 
+  /antd-img-crop@4.18.0(antd@5.11.2)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-K9GJYg0F1tE9Q+TWuHX8QOeH52Z8OA+WAXAUWjJkPHeHAWlnIh538RpuHYgogP7LN4U1qU7TQKRCwkrUPNMdGA==}
+    peerDependencies:
+      antd: '>=4.0.0'
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      antd: 5.11.2(react-dom@18.2.0)(react@18.2.0)
+      compare-versions: 6.1.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      react-easy-crop: 5.0.2(react-dom@18.2.0)(react@18.2.0)
+      tslib: 2.6.2
+    dev: false
+
   /antd@5.11.2(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-7/yqmfXpShHH0MJQOgv3vX9PUFwctyBm/G5L0i/S4AQy20ON6ZZ2UkjmWxgwg3vq2CEHKyVGTHozpH9WwDizgw==}
     peerDependencies:
@@ -2042,6 +2060,10 @@ packages:
     engines: {node: '>= 0.8'}
     dependencies:
       delayed-stream: 1.0.0
+    dev: false
+
+  /compare-versions@6.1.0:
+    resolution: {integrity: sha512-LNZQXhqUvqUTotpZ00qLSaify3b4VFD588aRr8MKFw4CMUr98ytzCW5wDH5qx/DEY5kCDXcbcRuCqL0szEf2tg==}
     dev: false
 
   /compute-scroll-into-view@3.1.0:
@@ -3309,6 +3331,10 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
+  /normalize-wheel@1.0.1:
+    resolution: {integrity: sha512-1OnlAPZ3zgrk8B91HyRj+eVv+kS5u+Z0SCsak6Xil/kmgEia50ga7zfkumayonZrImffAxPU/5WcyGhzetHNPA==}
+    dev: false
+
   /npm-run-path@4.0.1:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
     engines: {node: '>=8'}
@@ -4087,6 +4113,18 @@ packages:
       scheduler: 0.23.0
     dev: false
 
+  /react-easy-crop@5.0.2(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-j4A/0s0v/Gx5YGXvw3SOFIMmRk5YCdob2ABL5cD00Q9HQPKIz6tkCYLdj0RMO0REPtCAOsZ2ZZLI6fUofiDP6w==}
+    peerDependencies:
+      react: '>=16.4.0'
+      react-dom: '>=16.4.0'
+    dependencies:
+      normalize-wheel: 1.0.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      tslib: 2.0.1
+    dev: false
+
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: false
@@ -4628,6 +4666,10 @@ packages:
 
   /tslib@1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
+    dev: false
+
+  /tslib@2.0.1:
+    resolution: {integrity: sha512-SgIkNheinmEBgx1IUNirK0TUD4X9yjjBRTqqjggWCU3pUEqIk3/Uwl3yRixYKT6WjQuGiwDv4NomL3wqRCj+CQ==}
     dev: false
 
   /tslib@2.6.2:

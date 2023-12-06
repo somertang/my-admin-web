@@ -1,8 +1,9 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
+import React, { forwardRef, useImperativeHandle, useMemo } from 'react';
 import { Form, FormInstance, Input, Radio, App } from 'antd';
-import { useRequest } from 'ahooks';
+import { useRequest } from '@/hooks/use-request';
 import userService from '@/services/user.ts';
 import { User } from '@/services/user.ts';
+import Avatar from '@/pages/User/components/Avatar.tsx';
 
 const { useForm, Item } = Form;
 
@@ -21,28 +22,54 @@ const Index: React.ForwardRefRenderFunction<FormInstance, Props> = (props, ref) 
   useImperativeHandle(ref, () => form, [form]);
 
   const handleSave = async (values: User) => {
-    try {
-      props.setSaveLoading(true);
-      if (props.editData) {
-        await updateUser({ ...props.editData, ...values });
-        message.success('用户更新成功');
-      } else {
-        await addUser({ ...values });
-        message.success('用户创建成功');
-      }
-      props.onSave();
-    } catch (e: any) {
-      message.error(e?.response?.data?.message);
+    props.setSaveLoading(true);
+
+    console.log(values?.userAvatar, 'ss');
+
+    if (values?.userAvatar?.[0]?.response?.id) {
+      values.userAvatar = values?.userAvatar?.[0]?.response?.id;
+    } else {
+      values.userAvatar = null;
     }
+
+    if (props.editData) {
+      await updateUser({ ...props.editData, ...values });
+      message.success('用户更新成功');
+    } else {
+      await addUser({ ...values });
+      message.success('用户创建成功');
+    }
+    props.onSave();
     props.setSaveLoading(false);
   };
+
+  const initialValues = useMemo(() => {
+    if (props.editData) {
+      return {
+        ...props.editData,
+        userAvatar: props.editData.avatarEntity
+          ? [
+              {
+                uid: '-1',
+                name: props.editData.avatarEntity.fileName,
+                states: 'done',
+                url: props.editData.avatarEntity.filePath,
+                response: {
+                  id: props.editData.avatarEntity.id,
+                },
+              },
+            ]
+          : [],
+      };
+    }
+  }, [props.editData]);
 
   return (
     <Form
       labelCol={{ sm: { span: 24 }, md: { span: 5 } }}
       wrapperCol={{ sm: { span: 24 }, md: { span: 16 } }}
       form={form}
-      initialValues={props.editData}
+      initialValues={initialValues}
       onFinish={handleSave}
     >
       <Item
@@ -108,6 +135,9 @@ const Index: React.ForwardRefRenderFunction<FormInstance, Props> = (props, ref) 
             { label: '女', value: 0 },
           ]}
         />
+      </Item>
+      <Item label="头像" name="userAvatar">
+        <Avatar />
       </Item>
     </Form>
   );

@@ -9,6 +9,7 @@ export interface User {
   sex: string;
   userLock: number;
   userEnable: number;
+  userAvatar?: any;
 }
 
 export interface PageData<T> {

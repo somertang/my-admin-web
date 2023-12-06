@@ -107,6 +107,7 @@ const Login: React.FC = () => {
                   placeholder="验证码"
                   suffix={
                     <img
+                      alt="验证码"
                       onClick={refreshAsyncCaptcha}
                       className="cursor-pointer h-[28px]"
                       src={captchaData?.imageBase64}

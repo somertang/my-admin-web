@@ -7,6 +7,10 @@ import axios, {
 } from 'axios';
 import { useGlobalStore } from '@/stores/global';
 import { antdUtils } from '@/utils/antd';
+import { router } from '@/config/routers.tsx';
+import loginService from '@/services/login.ts';
+
+const refreshTokenUrl = '/api/auth/refresh/token';
 
 export type Response<T> = Promise<[boolean, T, AxiosResponse<T>]>;
 
@@ -25,23 +29,114 @@ class Request {
 
   private axiosInstance: AxiosInstance;
 
+  private refreshTokenFlag = false;
+  private requestQueue: {
+    resolve: any;
+    config: any;
+    type: 'request' | 'response';
+  }[] = [];
+  private limit = 3;
+
+  private requestingCount = 0;
+
+  setLimit(limit: number) {
+    this.limit = limit;
+  }
+
   private async requestInterceptor(axiosConfig: InternalAxiosRequestConfig): Promise<any> {
+    if ([refreshTokenUrl].includes(axiosConfig.url || '')) {
+      return Promise.resolve(axiosConfig);
+    }
+
+    if (this.refreshTokenFlag || this.requestingCount >= this.limit) {
+      return new Promise((resolve) => {
+        this.requestQueue.push({
+          resolve,
+          config: axiosConfig,
+          type: 'request',
+        });
+      });
+    }
+
+    this.requestingCount += 1;
+
     const { token } = useGlobalStore.getState();
-    // 为每个接口注入token
+
     if (token) {
       axiosConfig.headers.Authorization = `Bearer ${token}`;
     }
     return Promise.resolve(axiosConfig);
   }
 
+  private requestByQueue() {
+    if (!this.requestQueue.length) return;
+
+    console.log(this.requestingCount, this.limit - this.requestingCount, 'count');
+
+    Array.from({ length: this.limit - this.requestingCount }).forEach(async () => {
+      const record = this.requestQueue.shift();
+      if (!record) {
+        return;
+      }
+
+      const { config, resolve, type } = record;
+      if (type === 'response') {
+        resolve(await this.request(config));
+      } else if (type === 'request') {
+        this.requestingCount += 1;
+        const { token } = useGlobalStore.getState();
+        config.headers.Authorization = `Bearer ${token}`;
+        resolve(config);
+      }
+    });
+  }
+
+  private async refreshToken() {
+    const { refreshToken } = useGlobalStore.getState();
+
+    if (!refreshToken) {
+      this.toLoginPage();
+    }
+
+    const [error, data] = await loginService.refreshToken(refreshToken);
+
+    if (error) {
+      this.toLoginPage();
+    }
+
+    useGlobalStore.setState({
+      refreshToken: data.refreshToken,
+      token: data.token,
+    });
+
+    this.refreshTokenFlag = false;
+
+    this.requestByQueue();
+  }
+
   private async responseSuccessInterceptor(response: AxiosResponse<any, any>): Promise<any> {
+    if (response.config.url !== refreshTokenUrl) {
+      this.requestingCount -= 1;
+      if (this.requestQueue.length) {
+        this.requestByQueue();
+      }
+    }
+
     return Promise.resolve([false, response.data, response]);
   }
 
   private async responseErrorInterceptor(error: any): Promise<any> {
-    const { status } = error?.response || {};
+    this.requestingCount -= 1;
+    const { config, status } = error?.response || {};
+
     if (status === 401) {
-      // TODO 刷新token
+      return new Promise((resolve) => {
+        this.requestQueue.unshift({ resolve, config, type: 'response' });
+        if (this.refreshTokenFlag) return;
+
+        this.refreshTokenFlag = true;
+        this.refreshToken();
+      });
     } else {
       antdUtils.notification?.error({
         message: '出错了',
@@ -49,6 +144,17 @@ class Request {
       });
       return Promise.resolve([true, error?.response?.data]);
     }
+  }
+
+  private reset() {
+    this.requestQueue = [];
+    this.refreshTokenFlag = false;
+    this.requestingCount = 0;
+  }
+
+  private toLoginPage() {
+    this.reset();
+    router.navigate('/login');
   }
 
   request<T, D = any>(config: AxiosRequestConfig<D>): Response<T> {

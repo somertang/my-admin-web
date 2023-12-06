@@ -55,7 +55,7 @@ export function useRequest<T>(
     if (!options?.manual) {
       resolveData();
     }
-  }, [options]);
+  }, [options?.manual, resolveData]);
 
   return {
     loading,
