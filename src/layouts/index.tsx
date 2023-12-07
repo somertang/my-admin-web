@@ -9,8 +9,6 @@ import './index.css';
 import TabsLayout from './tabs-layout';
 import Content from './content';
 import { useNavigate } from 'react-router-dom';
-import { App } from 'antd';
-import { antdUtils } from '@/utils/antd.ts';
 import { useRequest } from '@/hooks/use-request';
 import userService from '@/services/user.ts';
 import { useUserStore } from '@/stores/user.ts';
@@ -20,19 +18,12 @@ const BasicLayout: React.FC = () => {
   const { lang, refreshToken } = useGlobalStore();
   const { setCurrentUser } = useUserStore();
   const navigate = useNavigate();
-  const { message, modal, notification } = App.useApp();
 
   const {
     loading,
     data: currentUserInfo,
     run: getCurrentUserInfo,
   } = useRequest(userService.getCurrentUser, { manual: true });
-
-  useEffect(() => {
-    antdUtils.setMessageInstance(message);
-    antdUtils.setNotificationInstance(notification);
-    antdUtils.setModalInstance(modal);
-  }, [message, modal, notification]);
 
   useEffect(() => {
     if (!refreshToken) {
@@ -44,7 +35,7 @@ const BasicLayout: React.FC = () => {
 
   useEffect(() => {
     setCurrentUser(currentUserInfo || null);
-  }, [currentUserInfo, setCurrentUser]);
+  }, [currentUserInfo]);
 
   useEffect(() => {
     function storageChange(e: StorageEvent) {

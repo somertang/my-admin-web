@@ -4,6 +4,7 @@ import { useRequest } from '@/hooks/use-request';
 import userService from '@/services/user.ts';
 import { User } from '@/services/user.ts';
 import Avatar from '@/pages/User/components/Avatar.tsx';
+import EmailInput from '@/pages/User/components/EmailInput.tsx';
 
 const { useForm, Item } = Form;
 
@@ -22,8 +23,6 @@ const Index: React.ForwardRefRenderFunction<FormInstance, Props> = (props, ref) 
   useImperativeHandle(ref, () => form, [form]);
 
   const handleSave = async (values: User) => {
-    props.setSaveLoading(true);
-
     console.log(values?.userAvatar, 'ss');
 
     if (values?.userAvatar?.[0]?.response?.id) {
@@ -33,14 +32,23 @@ const Index: React.ForwardRefRenderFunction<FormInstance, Props> = (props, ref) 
     }
 
     if (props.editData) {
-      await updateUser({ ...props.editData, ...values });
+      props.setSaveLoading(true);
+      const [error] = await updateUser({ ...props.editData, ...values });
+      props.setSaveLoading(false);
+      if (error) {
+        return false;
+      }
       message.success('用户更新成功');
     } else {
-      await addUser({ ...values });
+      props.setSaveLoading(true);
+      const [error] = await addUser({ ...values });
+      props.setSaveLoading(false);
+      if (error) {
+        return false;
+      }
       message.success('用户创建成功');
     }
     props.onSave();
-    props.setSaveLoading(false);
   };
 
   const initialValues = useMemo(() => {
@@ -126,8 +134,13 @@ const Index: React.ForwardRefRenderFunction<FormInstance, Props> = (props, ref) 
           },
         ]}
       >
-        <Input />
+        <EmailInput disabled={!!props.editData} />
       </Item>
+      {!props.editData && (
+        <Item name="emailCaptcha" label="邮箱验证码">
+          <Input />
+        </Item>
+      )}
       <Item label="性别" name="sex" initialValue={1}>
         <Radio.Group
           options={[

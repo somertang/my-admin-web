@@ -73,6 +73,9 @@ const userService = {
   getCurrentUser: () => {
     return request.get<User>('/api/auth/current/user');
   },
+  sendEmailCaptcha: (email: string) => {
+    return request.post('/api/user/send/email/captcha', { email });
+  },
 };
 
 export default userService;

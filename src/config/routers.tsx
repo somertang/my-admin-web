@@ -1,15 +1,22 @@
 import { createBrowserRouter, Navigate, RouteObject, RouterProvider } from 'react-router-dom';
 import Login from '../pages/Login';
-import React from 'react';
+import React, { useEffect } from 'react';
 import BasicLayout from '@/layouts';
 import RouterErrorElement from '@/exception/router-error-element.tsx';
 import { routerConfig } from '@/config/router-config.tsx';
+import { App } from 'antd';
+import { antdUtils } from '@/utils/antd.ts';
+import RestPassword from '@/pages/Login/RestPassword';
 // import Result404 from '@/exception/404.tsx';
 
 export const router = createBrowserRouter([
   {
     path: '/login',
     Component: Login,
+  },
+  {
+    path: '/reset-password',
+    Component: RestPassword,
   },
   // {
   //   path: '*',
@@ -55,13 +62,13 @@ export const replaceRoutes = (parentPath: string, routes: RouteObject[]) => {
 };
 
 const Router: React.FC = () => {
-  // const { notification, message, modal } = App.useApp();
-  //
-  // useEffect(() => {
-  //   antdUtils.setMessageInstance(message);
-  //   antdUtils.setNotificationInstance(notification);
-  //   antdUtils.setModalInstance(modal);
-  // }, [notification, message, modal]);
+  const { notification, message, modal } = App.useApp();
+
+  useEffect(() => {
+    antdUtils.setMessageInstance(message);
+    antdUtils.setNotificationInstance(notification);
+    antdUtils.setModalInstance(modal);
+  }, [notification, message, modal]);
 
   return (
     <>

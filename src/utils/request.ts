@@ -71,8 +71,6 @@ class Request {
   private requestByQueue() {
     if (!this.requestQueue.length) return;
 
-    console.log(this.requestingCount, this.limit - this.requestingCount, 'count');
-
     Array.from({ length: this.limit - this.requestingCount }).forEach(async () => {
       const record = this.requestQueue.shift();
       if (!record) {
@@ -128,6 +126,8 @@ class Request {
   private async responseErrorInterceptor(error: any): Promise<any> {
     this.requestingCount -= 1;
     const { config, status } = error?.response || {};
+
+    console.log(status, 'state');
 
     if (status === 401) {
       return new Promise((resolve) => {

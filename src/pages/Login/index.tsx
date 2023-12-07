@@ -1,5 +1,5 @@
 import React from 'react';
-import { App, Button, Form, Input } from 'antd';
+import { App, Button, Form, Input, Modal } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { IconBuguang } from '@/assets/icons/buguang.tsx';
 import { IconYanzhengma } from '@/assets/icons/yanzhengma.tsx';
@@ -9,18 +9,37 @@ import loginService, { LoginDTO } from '@/services/login.ts';
 import { useGlobalStore } from '@/stores/global';
 import { useNavigate } from 'react-router-dom';
 import { JSEncrypt } from 'jsencrypt';
+import { useSetState } from 'ahooks';
+import { antdUtils } from '@/utils/antd.ts';
+import IconPassword1 from '../../../public/images/password-1.svg';
+import IconPassword2 from '../../../public/images/password-2.svg';
 
 const { useForm } = Form;
+
+interface StateType {
+  resetPasswordOpen: boolean;
+  emailInputFours: boolean;
+  checkEmail: string | null;
+}
 
 const Login: React.FC = () => {
   const [form] = useForm();
   const { message } = App.useApp();
   const { setRefreshToken, setToken } = useGlobalStore();
   const navigate = useNavigate();
+  const [state, setState] = useSetState<StateType>({
+    resetPasswordOpen: false,
+    emailInputFours: false,
+    checkEmail: null,
+  });
   const { data: captchaData, runAsync: refreshAsyncCaptcha } = useRequest(loginService.getCaptcha, {
     manual: false,
   });
   const { runAsync: login, loading } = useRequest(loginService.login, { manual: true });
+  const { runAsync: sendResetPasswordEmail, loading: resetLoading } = useRequest(
+    loginService.sendResetPasswordEmail,
+    { manual: true }
+  );
 
   const handleFinish = async (values: LoginDTO) => {
     if (!captchaData) {
@@ -67,6 +86,20 @@ const Login: React.FC = () => {
     } catch (e: any) {
       await refreshAsyncCaptcha();
       message.error(e?.response?.data?.message);
+    }
+  };
+
+  const sendCheckEmail = async () => {
+    if (!state.checkEmail) {
+      antdUtils.message?.error('无效的邮箱格式！');
+      return;
+    }
+
+    const [error] = await sendResetPasswordEmail(state.checkEmail);
+
+    if (!error) {
+      antdUtils.message?.success('邮件已发送，请到邮箱查看。');
+      setState({ resetPasswordOpen: false });
     }
   };
 
@@ -117,7 +150,11 @@ const Login: React.FC = () => {
               </Form.Item>
               <Form.Item noStyle style={{ marginBottom: 0 }}>
                 <div className="text-right mb-[18px]">
-                  <a className="text-[16px] !text-[rgb(124,77,255)] select-none" type="link">
+                  <a
+                    className="text-[16px] !text-[rgb(124,77,255)] select-none"
+                    type="link"
+                    onClick={() => setState({ resetPasswordOpen: true })}
+                  >
                     忘记密码？
                   </a>
                 </div>
@@ -152,6 +189,55 @@ const Login: React.FC = () => {
           }}
         />
       </div>
+      <Modal
+        title="重置密码"
+        open={state.resetPasswordOpen}
+        footer={null}
+        width={400}
+        maskClosable={false}
+        bodyStyle={{ padding: '20px 0', position: 'relative' }}
+        style={{ top: 240 }}
+        onCancel={() => {
+          setState({ resetPasswordOpen: false });
+        }}
+      >
+        {!state.emailInputFours && (
+          <img
+            alt="重置密码 1"
+            className="absolute top-[-139px] left-[calc(50%-67px)]"
+            src={IconPassword1}
+          />
+        )}
+        {state.emailInputFours && (
+          <img
+            alt="重置密码 2"
+            className="absolute top-[-139px] left-[calc(50%-67px)]"
+            src={IconPassword2}
+          />
+        )}
+        <Input
+          size="large"
+          placeholder="请输入邮箱地址"
+          onBlur={() => {
+            setState({ emailInputFours: false });
+          }}
+          onFocus={() => {
+            setState({ emailInputFours: true });
+          }}
+          onChange={(e) => {
+            setState({ checkEmail: e.target.value });
+          }}
+        />
+        <Button
+          className="mt-[16px]"
+          type="primary"
+          block
+          onClick={sendCheckEmail}
+          loading={resetLoading}
+        >
+          发送验证邮件
+        </Button>
+      </Modal>
     </div>
   );
 };
