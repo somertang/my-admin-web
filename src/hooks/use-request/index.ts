@@ -26,8 +26,8 @@ export function useRequest<T>(
     setLoading(true);
     const [error, requestData] = await serviceMethod(...(options?.defaultParams || []));
     setLoading(false);
-    setData(requestData);
     setError(error);
+    setData(requestData);
   };
 
   const runAsync = useCallback(
