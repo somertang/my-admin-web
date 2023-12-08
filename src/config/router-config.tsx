@@ -32,6 +32,14 @@ export const routerConfig: MenuItem[] = [
           icon: 'UserOutlined',
         },
       },
+      {
+        path: 'menu',
+        Component: lazy(() => import('../pages/Menu')),
+        handle: {
+          name: '菜单管理',
+          icon: 'MenuOutlined',
+        },
+      },
     ],
   },
 ];

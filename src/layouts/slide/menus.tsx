@@ -96,6 +96,13 @@ const SlideMenu: React.FC<any> = () => {
             icon: 'UserOutlined',
             show: true,
           },
+          {
+            id: 'menu',
+            path: '/system/menu',
+            name: '菜单管理',
+            icon: 'MenuOutlined',
+            show: true,
+          },
         ],
       },
     ]);
