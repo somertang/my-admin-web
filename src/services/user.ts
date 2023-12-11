@@ -6,10 +6,14 @@ export interface User {
   nickName: string;
   userMobile: string;
   userEmail: string;
-  sex: string;
-  userLock: number;
-  userEnable: number;
+  createdDate: string;
+  lastUpdateDate: string;
   userAvatar?: any;
+  menus: Menu[];
+  routes: any[];
+  flatMenus: Menu[];
+  avatarPath: string;
+  authList: string[];
 }
 
 export interface PageData<T> {
@@ -75,6 +79,9 @@ const userService = {
   },
   sendEmailCaptcha: (email: string) => {
     return request.post('/api/user/send/email/captcha', { email });
+  },
+  getRoles: () => {
+    return request.get<any[]>('/api/role/list');
   },
 };
 

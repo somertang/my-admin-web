@@ -32,12 +32,12 @@ const CreateMenu: React.FC<CreateMemuProps> = (props) => {
     } else {
       form.resetFields();
     }
-  }, [visible]);
+  }, [editData, form, visible]);
 
   const save = async (values: any) => {
     setSaveLoading(true);
     values.parentId = parentId || null;
-    values.show = values.type === MenuType.DIRECTORY ? true : values.show;
+    values.enable = values.type === MenuType.DIRECTORY ? true : values.enable;
 
     if (editData) {
       values.parentId = editData.parentId;

@@ -40,6 +40,14 @@ export const routerConfig: MenuItem[] = [
           icon: 'MenuOutlined',
         },
       },
+      {
+        path: 'role',
+        Component: lazy(() => import('../pages/Role')),
+        handle: {
+          name: '角色管理',
+          icon: 'ForkOutlined',
+        },
+      },
     ],
   },
 ];

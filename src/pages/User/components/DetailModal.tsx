@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useMemo } from 'react';
-import { Form, FormInstance, Input, Radio, App } from 'antd';
+import { Form, FormInstance, Input, Radio, App, Select } from 'antd';
 import { useRequest } from '@/hooks/use-request';
 import userService from '@/services/user.ts';
 import { User } from '@/services/user.ts';
@@ -18,6 +18,7 @@ export interface Props {
 const Index: React.ForwardRefRenderFunction<FormInstance, Props> = (props, ref) => {
   const { runAsync: addUser } = useRequest(userService.addUser, { manual: true });
   const { runAsync: updateUser } = useRequest(userService.updateUser, { manual: true });
+  const { data: roles, loading: getRolesLoading } = useRequest(userService.getRoles);
   const [form] = useForm();
   const { message } = App.useApp();
   useImperativeHandle(ref, () => form, [form]);
@@ -141,6 +142,16 @@ const Index: React.ForwardRefRenderFunction<FormInstance, Props> = (props, ref) 
           <Input />
         </Item>
       )}
+      <Form.Item label="角色" name="roleIds">
+        <Select
+          options={(roles || []).map((role) => ({
+            label: role.name,
+            value: role.id,
+          }))}
+          mode="multiple"
+          loading={getRolesLoading}
+        />
+      </Form.Item>
       <Item label="性别" name="sex" initialValue={1}>
         <Radio.Group
           options={[

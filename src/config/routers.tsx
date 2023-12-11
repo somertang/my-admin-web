@@ -2,12 +2,10 @@ import { createBrowserRouter, Navigate, RouteObject, RouterProvider } from 'reac
 import Login from '../pages/Login';
 import React, { useEffect } from 'react';
 import BasicLayout from '@/layouts';
-import RouterErrorElement from '@/exception/router-error-element.tsx';
-import { routerConfig } from '@/config/router-config.tsx';
 import { App } from 'antd';
 import { antdUtils } from '@/utils/antd.ts';
 import RestPassword from '@/pages/Login/RestPassword';
-// import Result404 from '@/exception/404.tsx';
+import RouterErrorElement from '@/exception/router-error-element.tsx';
 
 export const router = createBrowserRouter([
   {
@@ -18,18 +16,14 @@ export const router = createBrowserRouter([
     path: '/reset-password',
     Component: RestPassword,
   },
-  // {
-  //   path: '*',
-  //   Component: Result404,
-  // },
   {
     path: '/',
-    element: <Navigate to="/dashbord" />,
+    element: <Navigate to="/dashboard" />,
   },
   {
     path: '*',
     Component: BasicLayout,
-    children: routerConfig,
+    children: [],
     errorElement: <RouterErrorElement />,
   },
 ]);

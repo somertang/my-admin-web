@@ -87,7 +87,8 @@ const TabsLayout: React.FC = () => {
             {tab.children}
           </div>
         ),
-        closable: tabs.length > 1, // 剩最后一个就不能删除了
+        closable: tab.routePath !== '/dashboard',
+        // closable: tabs.length > 1, // 剩最后一个就不能删除了
       };
     });
   }, [tabs]);

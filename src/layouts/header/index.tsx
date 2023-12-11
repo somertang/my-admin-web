@@ -156,15 +156,14 @@ const Header = () => {
             }}
           >
             <div className="btn-icon rounded-[27px] pl-[10px] pr-[14px] justify-between h-[48px] w-[92px] text-[20px] bg-[rgb(227,242,253)] text-[rgb(30,136,229)] hover:(bg-[rgb(33,150,243)] text-[rgb(227,242,253)])">
-              {/*{currentUser?.avatarPath ? (*/}
-              {/*  <Avatar style={{ verticalAlign: 'middle' }} src={currentUser.avatarPath} />*/}
-              {/*) : (*/}
-              {/*  <Avatar style={{ backgroundColor: 'gold', verticalAlign: 'middle' }} icon={<IconBuguang />} />*/}
-              {/*)}*/}
-              <Avatar
-                style={{ backgroundColor: 'gold', verticalAlign: 'middle' }}
-                icon={<IconBuguang />}
-              />
+              {currentUser?.avatarPath ? (
+                <Avatar style={{ verticalAlign: 'middle' }} src={currentUser.avatarPath} />
+              ) : (
+                <Avatar
+                  style={{ backgroundColor: 'gold', verticalAlign: 'middle' }}
+                  icon={<IconBuguang />}
+                />
+              )}
               <SettingOutlined />
             </div>
           </Dropdown>

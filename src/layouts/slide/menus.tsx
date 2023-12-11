@@ -1,28 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Menu } from 'antd';
-// import type { ItemType } from 'antd/es/menu/hooks/useItems';
-import {
-  Link,
-  // Link,
-  useMatches,
-} from 'react-router-dom';
-
+import { Link, useMatches } from 'react-router-dom';
 import { useGlobalStore } from '@/stores/global';
-// import { useUserStore } from '@/stores/global/user';
-// import { antdIcons } from '@/assets/antd-icons';
 import { Menu as MenuType } from '@/services/user';
 import { antdIcons } from '@/assets/antd-icons';
 import { ItemType } from 'antd/es/menu/hooks/useItems';
-
-// const items: MenuProps['items'] = [
-//   getItem('工作台', 'workbench', <MailOutlined />),
-//
-//   getItem('Navigation Two', 'sub2', <AppstoreOutlined />, [
-//     getItem('Option 5', '5'),
-//     getItem('Option 6', '6'),
-//     getItem('Submenu', 'sub3', null, [getItem('Option 7', '7'), getItem('Option 8', '8')]),
-//   ]),
-// ];
+import { useUserStore } from '@/stores/user.ts';
 
 const SlideMenu: React.FC<any> = () => {
   const matches = useMatches();
@@ -32,9 +15,7 @@ const SlideMenu: React.FC<any> = () => {
 
   const { collapsed } = useGlobalStore();
 
-  // const {
-  //   currentUser,
-  // } = useUserStore();
+  const { currentUser } = useUserStore();
 
   useEffect(() => {
     if (collapsed) {
@@ -49,13 +30,13 @@ const SlideMenu: React.FC<any> = () => {
         // 从自定义参数中取出上级path，让菜单自动展开
         setOpenKeys(handle?.parentPaths || []);
         // 让当前菜单和所有上级菜单高亮显示
-        setSelectKeys([...(handle?.parentPaths || []), route?.pathname] || []);
+        setSelectKeys([...(handle?.parentPaths || []), handle?.path] || []);
       }
     }
   }, [matches, collapsed]);
 
   const getMenuTitle = (menu: MenuType) => {
-    if (menu?.children?.filter((menu) => menu.show)?.length) {
+    if (menu?.children?.filter((menu) => menu.enable)?.length) {
       return menu.name;
     }
     return <Link to={menu.path}>{menu.name}</Link>;
@@ -63,7 +44,7 @@ const SlideMenu: React.FC<any> = () => {
 
   const treeMenuData = useCallback((menus: MenuType[]): ItemType[] => {
     return menus.map((menu: MenuType) => {
-      const children = menu?.children?.filter((menu) => menu.show) || [];
+      const children = menu?.children?.filter((menu) => menu.enable) || [];
       return {
         key: menu.path,
         label: getMenuTitle(menu),
@@ -74,43 +55,10 @@ const SlideMenu: React.FC<any> = () => {
   }, []);
 
   const menuData = useMemo(() => {
-    return treeMenuData([
-      {
-        id: 'dashbord',
-        path: '/dashbord',
-        name: '工作台',
-        icon: 'DashboardOutlined',
-        show: true,
-      },
-      {
-        id: 'system',
-        path: '/system',
-        name: '系统管理',
-        icon: 'SettingOutlined',
-        show: true,
-        children: [
-          {
-            id: 'user',
-            path: '/system/user',
-            name: '用户管理',
-            icon: 'UserOutlined',
-            show: true,
-          },
-          {
-            id: 'menu',
-            path: '/system/menu',
-            name: '菜单管理',
-            icon: 'MenuOutlined',
-            show: true,
-          },
-        ],
-      },
-    ]);
-  }, []);
+    return treeMenuData(currentUser?.menus?.filter((menu) => menu.enable) || []);
+  }, [currentUser]);
 
-  // const menuData = useMemo(() => {
-  //   return treeMenuData(currentUser?.menus?.filter(menu => menu.show) || []);
-  // }, [currentUser]);
+  console.log(menuData, 'ss', currentUser);
 
   return (
     <Menu
