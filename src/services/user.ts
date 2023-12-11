@@ -31,7 +31,7 @@ export interface Menu {
   filePath?: string;
   orderNumber?: number;
   url?: string;
-  show?: boolean;
+  enable?: boolean;
   children?: Menu[];
   path: string;
   Component?: any;
